@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Platform, TouchableOpacity } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function SimpleForm() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [amount, setAmount] = useState('');
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(Platform.OS === 'ios'); 
+    setDate(currentDate);
+  };
 
   const handleSubmit = () => {
-    if (name && email) {
-      Alert.alert('Form Submitted!', `Name: ${name}\nEmail: ${email}`);
+    if (name && amount && date) {
+      Alert.alert('Expense Submitted!', `Name: ${name}\nAmount: ₹${amount}\nDate: ${date.toLocaleDateString()}`);
     } else {
       Alert.alert('Error', 'Please fill out all fields');
     }
@@ -15,24 +24,48 @@ export default function SimpleForm() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.header}>Enter your Expense Details</Text>
+
       <Text style={styles.label}>Name:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter your name"
+        placeholder="Enter name"
         value={name}
         onChangeText={text => setName(text)}
       />
 
-      <Text style={styles.label}>Email:</Text>
+      <Text style={styles.label}>Amount (₹):</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter your email"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={text => setEmail(text)}
+        placeholder="Enter amount in Rupees"
+        keyboardType="numeric"
+        value={amount}
+        onChangeText={text => setAmount(text)}
       />
 
-      <Button title="Submit" onPress={handleSubmit} />
+      <Text style={styles.label}>Date:</Text>
+      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+        <TextInput
+          style={styles.input}
+          placeholder="Select date"
+          value={date.toLocaleDateString()}
+          editable={false}
+          pointerEvents="none" 
+        />
+      </TouchableOpacity>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+
+      <View style={styles.buttonContainer}>
+        <Button title="Submit Expense" onPress={handleSubmit} />
+      </View>
     </View>
   );
 }
@@ -41,17 +74,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: 30,
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#333',
+    marginBottom: 30,
+    paddingVertical: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
   },
   label: {
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: 8,
   },
   input: {
-    height: 40,
+    height: 50,
+    fontSize: 18,
     borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+  },
+  buttonContainer: {
+    marginTop: 10,
+    width: '60%',
+    alignSelf: 'center',
   },
 });

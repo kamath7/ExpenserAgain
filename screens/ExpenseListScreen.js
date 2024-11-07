@@ -9,7 +9,7 @@ export default function ExpenseListScreen({ navigation, expenses }) {
       <View style={styles.buttonContainer}>
         <Button
           title="Add an Expense"
-          onPress={() => navigation.navigate('AddExpense')}
+          onPress={() => navigation.replace('AddExpense')}
         />
       </View>
     </View>

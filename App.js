@@ -19,23 +19,23 @@ export default function App() {
       <Stack.Navigator initialRouteName="ExpenseList">
         <Stack.Screen
           name="ExpenseList"
-          options={{ title: 'Saved Expenses' }}
+          options={{ headerShown: false }} // Remove title
         >
           {(props) => (
             <ExpenseListScreen
               {...props}
-              expenses={expenses} 
+              expenses={expenses}  // Pass the expenses to ExpenseListScreen
             />
           )}
         </Stack.Screen>
         <Stack.Screen
           name="AddExpense"
-          options={{ title: 'Add New Expense' }}
+          options={{ headerShown: false }} // Remove title
         >
           {(props) => (
             <AddExpenseScreen
               {...props}
-              addExpense={addExpense} 
+              addExpense={addExpense}  // Pass addExpense function to AddExpenseScreen
             />
           )}
         </Stack.Screen>

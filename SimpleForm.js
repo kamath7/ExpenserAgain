@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function SimpleForm({ addExpense }) {
+export default function SimpleForm({ onSubmit }) {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date());
@@ -15,19 +15,21 @@ export default function SimpleForm({ addExpense }) {
   };
 
   const handleSubmit = () => {
-    if (name && amount && date) {
-      addExpense(name, amount, date);
-      setName('');
-      setAmount('');
-      setDate(new Date());
+    if (name && amount) {
+      const expenseData = {
+        name,
+        amount,
+        date: date.toLocaleDateString(),
+      };
+      onSubmit(expenseData);  // Call the onSubmit prop with expense data
     } else {
-      Alert.alert('Error', 'Please fill out all fields');
+      alert('Please fill out all fields.');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Enter your Expense Details</Text>
+      <Text style={styles.header}>Enter Expense Details</Text>
 
       <Text style={styles.label}>Name:</Text>
       <TextInput
@@ -67,7 +69,7 @@ export default function SimpleForm({ addExpense }) {
       )}
 
       <View style={styles.buttonContainer}>
-        <Button title="Submit Expense" onPress={handleSubmit} />
+        <Button title="Save Expense" onPress={handleSubmit} />
       </View>
     </View>
   );
@@ -75,20 +77,16 @@ export default function SimpleForm({ addExpense }) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 30,
+    flex: 1,
+    padding: 20,
   },
   header: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: 30,
-    paddingVertical: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
+    marginBottom: 20,
   },
   label: {
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: 8,
   },
   input: {
@@ -97,12 +95,10 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 20,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     borderRadius: 8,
   },
   buttonContainer: {
     marginTop: 10,
-    alignSelf: 'center',
-    width: '60%',
   },
 });

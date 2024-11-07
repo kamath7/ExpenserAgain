@@ -1,33 +1,45 @@
-import { StyleSheet, Text, View } from 'react-native';
-import SimpleForm from './SimpleForm';
-import ExpenseList from './ExpenseList';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import ExpenseListScreen from './screens/ExpenseListScreen';
+import AddExpenseScreen from './screens/AddExpenseScreen';
+
+const Stack = createStackNavigator();
 
 export default function App() {
-
   const [expenses, setExpenses] = useState([]);
 
-  const addExpense = (name, amount, date) => {
-    setExpenses(prevExpenses => [
-      ...prevExpenses,
-      { id: Date.now().toString(), name, amount, date: date.toLocaleDateString() },
-    ]);
+  // Function to add a new expense
+  const addExpense = (expense) => {
+    setExpenses((currentExpenses) => [...currentExpenses, expense]);
   };
 
   return (
-    <View style={styles.container}>
-   
-        <SimpleForm addExpense={addExpense}/>
-        <ExpenseList expenses={expenses}/>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="ExpenseList">
+        <Stack.Screen
+          name="ExpenseList"
+          options={{ title: 'Saved Expenses' }}
+        >
+          {(props) => (
+            <ExpenseListScreen
+              {...props}
+              expenses={expenses} 
+            />
+          )}
+        </Stack.Screen>
+        <Stack.Screen
+          name="AddExpense"
+          options={{ title: 'Add New Expense' }}
+        >
+          {(props) => (
+            <AddExpenseScreen
+              {...props}
+              addExpense={addExpense} 
+            />
+          )}
+        </Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

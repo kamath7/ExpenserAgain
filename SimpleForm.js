@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function SimpleForm() {
+export default function SimpleForm({ addExpense }) {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date());
@@ -10,13 +10,16 @@ export default function SimpleForm() {
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShowDatePicker(Platform.OS === 'ios'); 
+    setShowDatePicker(false);
     setDate(currentDate);
   };
 
   const handleSubmit = () => {
     if (name && amount && date) {
-      Alert.alert('Expense Submitted!', `Name: ${name}\nAmount: ₹${amount}\nDate: ${date.toLocaleDateString()}`);
+      addExpense(name, amount, date);
+      setName('');
+      setAmount('');
+      setDate(new Date());
     } else {
       Alert.alert('Error', 'Please fill out all fields');
     }
@@ -50,7 +53,7 @@ export default function SimpleForm() {
           placeholder="Select date"
           value={date.toLocaleDateString()}
           editable={false}
-          pointerEvents="none" 
+          pointerEvents="none"
         />
       </TouchableOpacity>
 
@@ -72,8 +75,6 @@ export default function SimpleForm() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
     padding: 30,
   },
   header: {
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
-    width: '60%',
     alignSelf: 'center',
+    width: '60%',
   },
 });

@@ -1,134 +1,112 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Button,
-  TextInput,
-  StyleSheet,
-} from 'react-native';
+import { View, Button, TextInput, StyleSheet, ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import ExpensesList from '../ExpenseList';
-import {
-  clearFilters,
-  filterByAmount,
-  filterByDate,
-  filterByName,
-} from '../store/reducers/expenseReducer';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { clearFilters, filterByAmount, filterByDate, filterByName } from '../store/reducers/expenseReducer';
 
 export default function ExpenseListScreen({ navigation }) {
   const expenses = useSelector((state) => state.expense.filteredExpenses);
   const dispatch = useDispatch();
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [nameFilter, setNameFilter] = useState('');
   const [minAmount, setMinAmount] = useState('');
   const [maxAmount, setMaxAmount] = useState('');
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
 
-  const handleDateFilter = () => {
-    dispatch(filterByDate({ startDate, endDate }));
-  };
-
-  const handleNameFilter = () => {
-    dispatch(filterByName({ name: nameFilter }));
-  };
-
-  const handleAmountFilter = () => {
-    dispatch(filterByAmount({ minAmount, maxAmount }));
-  };
-
-  const handleClearFilters = () => {
-    setStartDate(null);
-    setEndDate(null);
-    setNameFilter('');
-    setMinAmount('');
-    setMaxAmount('');
-    dispatch(clearFilters());
-  };
+  const handleDateFilter = () => dispatch(filterByDate({ startDate, endDate }));
+  const handleNameFilter = () => dispatch(filterByName({ name: nameFilter }));
+  const handleAmountFilter = () => dispatch(filterByAmount({ minAmount, maxAmount }));
+  const handleClearFilters = () => dispatch(clearFilters());
 
   return (
-    <View style={styles.container}>
-      {/* Date Filters */}
-      <Button
-        title="Pick Start Date"
-        onPress={() => setShowStartPicker(true)}
-      />
-      {showStartPicker && (
-        <DateTimePicker
-          value={startDate || new Date()}
-          mode="date"
-          onChange={(event, selectedDate) => {
-            setShowStartPicker(false);
-            setStartDate(selectedDate);
-          }}
-        />
-      )}
+    <ScrollView style={styles.container}>
+      <View style={styles.filterContainer}>
+        <View style={styles.filterGroup}>
+          <TextInput
+            style={styles.input}
+            placeholder="Start Date"
+            value={startDate || ''}
+            onChangeText={setStartDate}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="End Date"
+            value={endDate || ''}
+            onChangeText={setEndDate}
+          />
+          <Button title="Filter by Date" onPress={handleDateFilter} />
+        </View>
 
-      <Button
-        title="Pick End Date"
-        onPress={() => setShowEndPicker(true)}
-      />
-      {showEndPicker && (
-        <DateTimePicker
-          value={endDate || new Date()}
-          mode="date"
-          onChange={(event, selectedDate) => {
-            setShowEndPicker(false);
-            setEndDate(selectedDate);
-          }}
-        />
-      )}
-      <Button title="Filter by Date" onPress={handleDateFilter} />
+        <View style={styles.filterGroup}>
+          <TextInput
+            style={styles.input}
+            placeholder="Filter by Name"
+            value={nameFilter}
+            onChangeText={setNameFilter}
+          />
+          <Button title="Filter by Name" onPress={handleNameFilter} />
+        </View>
 
-      {/* Name Filter */}
-      <TextInput
-        style={styles.input}
-        placeholder="Filter by Name"
-        value={nameFilter}
-        onChangeText={setNameFilter}
-      />
-      <Button title="Filter by Name" onPress={handleNameFilter} />
+        <View style={styles.filterGroup}>
+          <TextInput
+            style={styles.input}
+            placeholder="Min Amount"
+            value={minAmount}
+            onChangeText={setMinAmount}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Max Amount"
+            value={maxAmount}
+            onChangeText={setMaxAmount}
+            keyboardType="numeric"
+          />
+          <Button title="Filter by Amount" onPress={handleAmountFilter} />
+        </View>
 
-      {/* Amount Filters */}
-      <TextInput
-        style={styles.input}
-        placeholder="Min Amount"
-        keyboardType="numeric"
-        value={minAmount}
-        onChangeText={setMinAmount}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Max Amount"
-        keyboardType="numeric"
-        value={maxAmount}
-        onChangeText={setMaxAmount}
-      />
-      <Button title="Filter by Amount" onPress={handleAmountFilter} />
-
-      <Button title="Clear Filters" onPress={handleClearFilters} />
+        <Button title="Clear Filters" onPress={handleClearFilters} color="#ff5c5c" />
+      </View>
 
       <ExpensesList expenses={expenses} />
-      <Button
-        title="Add an Expense"
-        onPress={() => navigation.navigate('AddExpense')}
-      />
-    </View>
+
+      <View style={styles.buttonContainer}>
+        <Button title="Add an Expense" onPress={() => navigation.replace('AddExpense')} />
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#f9f9f9',
+    padding: 10,
+  },
+  filterContainer: {
+    marginBottom: 20,
+  },
+  filterGroup: {
+    marginBottom: 15,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   input: {
+    height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
-    marginVertical: 10,
-    paddingHorizontal: 10,
     borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    alignItems: 'center',
   },
 });

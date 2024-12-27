@@ -1,30 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { clearFilters } from "../store/reducers/expenseReducer";
+import { clearFilters, filterByName, filterByDate, filterByAmount } from "../store/reducers/expenseReducer";
 import ExpenseFilter from "../ExpenseFilter";  // Move the filter here
 
 const ExpenseListScreen = ({ navigation }) => {
   const expenses = useSelector((state) => state.expense.filteredExpenses);
   const dispatch = useDispatch();
 
+  // Ensure you set up filters as needed
+  useEffect(() => {
+    // When screen loads, display all expenses
+    dispatch(clearFilters());
+  }, [dispatch]);
+
   return (
     <View style={styles.container}>
-      {/* ExpenseFilter component - Show filters only when needed */}
-      <ExpenseFilter />
+      {/* Render ExpenseFilter once and only when necessary */}
+      <ExpenseFilter dispatch={dispatch} />
 
-      
       <FlatList
-      data={expenses}
-      keyExtractor={(item) => item.id ? item.id.toString() : 'no-id'} // Safe fallback
-      renderItem={({ item }) => (
-        <View style={styles.expenseItem}>
-          <Text style={styles.expenseText}>{item.name}</Text>
-          <Text style={styles.expenseText}>{item.amount}</Text>
-          <Text style={styles.expenseText}>{item.date}</Text>
-        </View>
-      )}
-    />
+        data={expenses}
+        keyExtractor={(item) => item.id ? item.id.toString() : 'no-id'} // Safe fallback
+        renderItem={({ item }) => (
+          <View style={styles.expenseItem}>
+            <Text style={styles.expenseText}>{item.name}</Text>
+            <Text style={styles.expenseText}>{item.amount}</Text>
+            <Text style={styles.expenseText}>{item.date}</Text>
+          </View>
+        )}
+      />
 
       {/* Button Section: Add Expense, Clear Filters */}
       <View style={styles.buttonContainer}>

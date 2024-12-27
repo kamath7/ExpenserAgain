@@ -2,26 +2,36 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function SimpleForm({ onSubmit }) {
-  const [name, setName] = useState('');
-  const [amount, setAmount] = useState('');
-  const [date, setDate] = useState(new Date());
+export default function SimpleForm({
+  onSubmit,
+  expenseName,
+  setExpenseName,
+  expenseAmount,
+  setExpenseAmount,
+  expenseDate,
+  setExpenseDate,
+}) {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  // Ensure that expenseDate is initialized as a Date object
+  if (!(expenseDate instanceof Date)) {
+    setExpenseDate(new Date()); // Fallback to current date if it's not a Date object
+  }
+
   const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate || expenseDate;
     setShowDatePicker(false);
-    setDate(currentDate);
+    setExpenseDate(currentDate); // Ensure expenseDate is a Date object
   };
 
   const handleSubmit = () => {
-    if (name && amount) {
+    if (expenseName && expenseAmount) {
       const expenseData = {
-        name,
-        amount,
-        date: date.toLocaleDateString(),
+        name: expenseName,
+        amount: expenseAmount,
+        date: expenseDate.toLocaleDateString(), // This should work if expenseDate is a valid Date object
       };
-      onSubmit(expenseData);  // Call the onSubmit prop with expense data
+      onSubmit(expenseData); // Call the onSubmit prop with expense data
     } else {
       alert('Please fill out all fields.');
     }
@@ -35,8 +45,8 @@ export default function SimpleForm({ onSubmit }) {
       <TextInput
         style={styles.input}
         placeholder="Enter name"
-        value={name}
-        onChangeText={text => setName(text)}
+        value={expenseName}
+        onChangeText={setExpenseName}
       />
 
       <Text style={styles.label}>Amount (₹):</Text>
@@ -44,8 +54,8 @@ export default function SimpleForm({ onSubmit }) {
         style={styles.input}
         placeholder="Enter amount in Rupees"
         keyboardType="numeric"
-        value={amount}
-        onChangeText={text => setAmount(text)}
+        value={expenseAmount}
+        onChangeText={setExpenseAmount}
       />
 
       <Text style={styles.label}>Date:</Text>
@@ -53,7 +63,7 @@ export default function SimpleForm({ onSubmit }) {
         <TextInput
           style={styles.input}
           placeholder="Select date"
-          value={date.toLocaleDateString()}
+          value={expenseDate ? expenseDate.toLocaleDateString() : ''}
           editable={false}
           pointerEvents="none"
         />
@@ -61,7 +71,7 @@ export default function SimpleForm({ onSubmit }) {
 
       {showDatePicker && (
         <DateTimePicker
-          value={date}
+          value={expenseDate} // Ensure this is a Date object
           mode="date"
           display="default"
           onChange={handleDateChange}
@@ -79,26 +89,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#f9f9f9',
+    justifyContent: 'flex-start',
   },
   header: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 40,
+    color: '#333',
+    textAlign: 'center',
   },
   label: {
-    fontSize: 18,
-    marginBottom: 8,
+    fontSize: 20,
+    marginBottom: 12,
+    color: '#333',
   },
   input: {
-    height: 50,
-    fontSize: 18,
+    height: 55,
+    fontSize: 20,
     borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    borderRadius: 8,
+    borderWidth: 1.5,
+    marginBottom: 25,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    backgroundColor: '#fff',
   },
   buttonContainer: {
-    marginTop: 10,
+    marginTop: 30,
+    alignItems: 'center',
   },
 });

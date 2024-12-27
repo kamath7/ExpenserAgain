@@ -11,7 +11,7 @@ const expenseSlice = createSlice({
   reducers: {
     addExpense: (state, action) => {
       const newExpense = action.payload;
-      state.expenses = [...state.expenses, newExpense];
+      state.expenses.push(newExpense);
       state.filteredExpenses = state.expenses;
     },
     filterByName: (state, action) => {
@@ -36,8 +36,8 @@ const expenseSlice = createSlice({
       state.filteredExpenses = state.expenses.filter((expense) => {
         const amount = parseFloat(expense.amount);
         return (
-          (!minAmount || amount >= parseFloat(minAmount)) &&
-          (!maxAmount || amount <= parseFloat(maxAmount))
+          (!minAmount || amount >= minAmount) &&
+          (!maxAmount || amount <= maxAmount)
         );
       });
     },
@@ -47,12 +47,5 @@ const expenseSlice = createSlice({
   },
 });
 
-export const {
-  addExpense,
-  filterByName,
-  filterByDate,
-  filterByAmount,
-  clearFilters,
-} = expenseSlice.actions;
-
+export const { addExpense, filterByName, filterByDate, filterByAmount, clearFilters } = expenseSlice.actions;
 export default expenseSlice.reducer;

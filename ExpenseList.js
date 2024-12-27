@@ -4,7 +4,6 @@ import { View, Text, FlatList, StyleSheet } from 'react-native';
 export default function ExpenseList({ expenses }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Saved Expenses</Text>
       <FlatList
         data={expenses}
         keyExtractor={item => item.id.toString()}
@@ -25,13 +24,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 20,
     backgroundColor: '#f9f9f9',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 15,
-    color: '#333',
   },
   expenseItem: {
     padding: 15,

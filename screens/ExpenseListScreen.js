@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { clearFilters, filterByName, filterByDate, filterByAmount } from "../store/reducers/expenseReducer";
+import { clearFilters } from "../store/reducers/expenseReducer";
 import ExpenseFilter from "../ExpenseFilter";
+import ExpenseList from "../ExpenseList"; // Import ExpenseList component
 
 const ExpenseListScreen = ({ navigation }) => {
   const expenses = useSelector((state) => state.expense.filteredExpenses);
   const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     dispatch(clearFilters());
@@ -14,32 +16,26 @@ const ExpenseListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Saved Expenses</Text>
+      <ExpenseList expenses={expenses} />
       <View style={styles.buttonContainer}>
-    
-        <ExpenseFilter dispatch={dispatch} />
-      </View>
-
-      <FlatList
-        data={expenses}
-        keyExtractor={(item) => item.id ? item.id.toString() : 'no-id'}
-        renderItem={({ item }) => (
-          <View style={styles.expenseItem}>
-            <Text style={styles.expenseText}>{item.name}</Text>
-            <Text style={styles.expenseText}>{item.amount}</Text>
-            <Text style={styles.expenseText}>{item.date}</Text>
-          </View>
-        )}
-      />
-
-      {/* Button Section: Add Expense */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('AddExpense')}  // Navigate to Add Expense screen
-        >
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddExpense')}>
           <Text style={styles.buttonText}>Add Expense</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => setShowModal(true)}>
+          <Text style={styles.buttonText}>Show Filter</Text>
+        </TouchableOpacity>
       </View>
+
+      {/* Modal to display ExpenseFilter directly */}
+      <Modal visible={showModal} animationType="slide" onRequestClose={() => setShowModal(false)}>
+        <View style={styles.modalContainer}>
+          <ExpenseFilter dispatch={dispatch} />
+          <TouchableOpacity style={styles.closeButton} onPress={() => setShowModal(false)}>
+            <Text style={styles.buttonText}>Close Filter</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -49,21 +45,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#f9f9f9',
-    justifyContent: 'flex-start',
   },
-  expenseItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 15,
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-  },
-  expenseText: {
-    fontSize: 16,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
     color: '#333',
+    textAlign: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -82,6 +70,22 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: '#f44336',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -7,7 +7,7 @@ export default function ExpenseList({ expenses }) {
       <Text style={styles.header}>Saved Expenses</Text>
       <FlatList
         data={expenses}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.expenseItem}>
             <Text style={styles.expenseText}>Name: {item.name}</Text>

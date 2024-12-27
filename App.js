@@ -6,6 +6,7 @@ import store from './store/store';
 
 import ExpenseListScreen from './screens/ExpenseListScreen';
 import AddExpenseScreen from './screens/AddExpenseScreen';
+import ExpenseFilter from './ExpenseFilter'; 
 
 const Stack = createStackNavigator();
 
@@ -13,19 +14,21 @@ export default function App() {
   return (
     <Provider store={store}> 
       <NavigationContainer>
+      
+        <ExpenseFilter />
         <Stack.Navigator initialRouteName="ExpenseList">
           <Stack.Screen
             name="ExpenseList"
-            options={{ headerShown: false }}
-          >
-            {(props) => <ExpenseListScreen {...props} />} 
-          </Stack.Screen>
+            options={{
+              headerShown: false,
+            }}
+            component={ExpenseListScreen}  
+          />
           <Stack.Screen
             name="AddExpense"
             options={{ headerShown: false }}
-          >
-            {(props) => <AddExpenseScreen {...props} />} 
-          </Stack.Screen>
+            component={AddExpenseScreen}  
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

@@ -23,21 +23,26 @@ export default function ExpenseList({ expenses }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
     marginTop: 20,
+    backgroundColor: '#f9f9f9',
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 15,
+    color: '#333',
   },
   expenseItem: {
     padding: 15,
+    marginBottom: 10,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
+    backgroundColor: '#fff',
+    borderRadius: 8,
   },
   expenseText: {
     fontSize: 16,
+    color: '#333',
   },
 });

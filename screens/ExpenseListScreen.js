@@ -1,18 +1,20 @@
 import React, { useEffect } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { clearFilters, filterByName, filterByDate, filterByAmount } from "../store/reducers/expenseReducer";
+import { clearFilters } from "../store/reducers/expenseReducer";
 import ExpenseFilter from "../ExpenseFilter";  // Move the filter here
 
 const ExpenseListScreen = ({ navigation }) => {
   const expenses = useSelector((state) => state.expense.filteredExpenses);
   const dispatch = useDispatch();
 
-  // Ensure you set up filters as needed
+  
   useEffect(() => {
-    // When screen loads, display all expenses
+   
     dispatch(clearFilters());
   }, [dispatch]);
+
+  console.log("Filtered Expenses:", expenses);  // Debugging log to see filtered data
 
   return (
     <View style={styles.container}>

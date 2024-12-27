@@ -16,6 +16,8 @@ export default function ExpenseFilter({ dispatch }) {
   };
 
   const applyFilters = () => {
+    console.log('Filter applied:', { filterName, minAmount, maxAmount, startDate, endDate });
+
     if (filterName) dispatch(filterByName({ name: filterName }));
     if (minAmount || maxAmount) dispatch(filterByAmount({ minAmount, maxAmount }));
     if (startDate && endDate) dispatch(filterByDate({ startDate, endDate }));

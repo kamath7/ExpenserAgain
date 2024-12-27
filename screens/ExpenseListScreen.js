@@ -1,29 +1,27 @@
 import React, { useEffect } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { clearFilters } from "../store/reducers/expenseReducer";
-import ExpenseFilter from "../ExpenseFilter";  // Move the filter here
+import { clearFilters, filterByName, filterByDate, filterByAmount } from "../store/reducers/expenseReducer";
+import ExpenseFilter from "../ExpenseFilter";
 
 const ExpenseListScreen = ({ navigation }) => {
   const expenses = useSelector((state) => state.expense.filteredExpenses);
   const dispatch = useDispatch();
 
-  
   useEffect(() => {
-   
     dispatch(clearFilters());
   }, [dispatch]);
 
-  console.log("Filtered Expenses:", expenses);  // Debugging log to see filtered data
-
   return (
     <View style={styles.container}>
-      {/* Render ExpenseFilter once and only when necessary */}
-      <ExpenseFilter dispatch={dispatch} />
+      <View style={styles.buttonContainer}>
+    
+        <ExpenseFilter dispatch={dispatch} />
+      </View>
 
       <FlatList
         data={expenses}
-        keyExtractor={(item) => item.id ? item.id.toString() : 'no-id'} // Safe fallback
+        keyExtractor={(item) => item.id ? item.id.toString() : 'no-id'}
         renderItem={({ item }) => (
           <View style={styles.expenseItem}>
             <Text style={styles.expenseText}>{item.name}</Text>
@@ -33,20 +31,13 @@ const ExpenseListScreen = ({ navigation }) => {
         )}
       />
 
-      {/* Button Section: Add Expense, Clear Filters */}
+      {/* Button Section: Add Expense */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('AddExpense')}  // Navigate to Add Expense screen
         >
           <Text style={styles.buttonText}>Add Expense</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => dispatch(clearFilters())}  // Clear filters
-        >
-          <Text style={styles.buttonText}>Clear Filters</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -57,8 +48,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f9f9f9', // Light background color for better contrast
-    justifyContent: 'flex-start', // Items will be aligned from the top
+    backgroundColor: '#f9f9f9',
+    justifyContent: 'flex-start',
   },
   expenseItem: {
     flexDirection: 'row',
@@ -77,15 +68,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 'auto', // Push the buttons to the bottom
-    marginBottom: 20,
+    marginTop: 20,
   },
   button: {
     backgroundColor: "#007BFF",
     padding: 15,
     marginVertical: 5,
     borderRadius: 8,
-    width: '48%', // Ensure buttons are not stretched too wide
+    width: '48%',
     alignItems: "center",
   },
   buttonText: {

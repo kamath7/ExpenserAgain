@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Button, TextInput, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
-import { filterByName, filterByDate, filterByAmount } from "./store/reducers/expenseReducer";
+import { filterByName, filterByDate, filterByAmount, clearFilters } from "./store/reducers/expenseReducer";
 
 export default function ExpenseFilter({ dispatch }) {
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
@@ -16,20 +16,34 @@ export default function ExpenseFilter({ dispatch }) {
   };
 
   const applyFilters = () => {
-    console.log('Filter applied:', { filterName, minAmount, maxAmount, startDate, endDate });
-
     if (filterName) dispatch(filterByName({ name: filterName }));
     if (minAmount || maxAmount) dispatch(filterByAmount({ minAmount, maxAmount }));
     if (startDate && endDate) dispatch(filterByDate({ startDate, endDate }));
   };
 
+  const handleClearFilters = () => {
+    dispatch(clearFilters());
+    setFilterName('');
+    setMinAmount('');
+    setMaxAmount('');
+    setStartDate('');
+    setEndDate('');
+  };
+
   return (
     <View style={styles.container}>
-      {/* Conditionally render button text */}
-      <Button
-        title={isFiltersVisible ? "Hide Filters" : "Show Filters"}
-        onPress={toggleFilters}
-      />
+      <View style={styles.filterButtonsContainer}>
+        <Button
+          title={isFiltersVisible ? "Hide Filters" : "Show Filters"}
+          onPress={toggleFilters}
+        />
+        {isFiltersVisible && (
+          <Button
+            title="Clear Filters"
+            onPress={handleClearFilters}
+          />
+        )}
+      </View>
 
       {isFiltersVisible && (
         <View style={styles.filterOptions}>
@@ -80,6 +94,11 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     alignItems: "center",
     marginBottom: 20,
+  },
+  filterButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   filterOptions: {
     marginTop: 10,

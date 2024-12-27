@@ -1,19 +1,31 @@
 import React, { useState } from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import {
+  View,
+  Button,
+  TextInput,
+  StyleSheet,
+} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-
 import ExpensesList from '../ExpenseList';
-import DatePicker from 'react-native-datepicker'; // Example date picker
-import { clearFilters, filterByAmount, filterByDate, filterByName } from '../store/reducers/expenseReducer';
+import {
+  clearFilters,
+  filterByAmount,
+  filterByDate,
+  filterByName,
+} from '../store/reducers/expenseReducer';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function ExpenseListScreen({ navigation }) {
-  const expenses = useSelector((state) => state.expenses.filteredExpenses);
+  const expenses = useSelector((state) => state.expense.filteredExpenses);
   const dispatch = useDispatch();
+
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [nameFilter, setNameFilter] = useState('');
-  const [minAmount, setMinAmount] = useState(null);
-  const [maxAmount, setMaxAmount] = useState(null);
+  const [minAmount, setMinAmount] = useState('');
+  const [maxAmount, setMaxAmount] = useState('');
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
 
   const handleDateFilter = () => {
     dispatch(filterByDate({ startDate, endDate }));
@@ -28,63 +40,95 @@ export default function ExpenseListScreen({ navigation }) {
   };
 
   const handleClearFilters = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setNameFilter('');
+    setMinAmount('');
+    setMaxAmount('');
     dispatch(clearFilters());
   };
 
   return (
     <View style={styles.container}>
-      {/* Date Filter */}
-      <DatePicker 
-        style={{ width: 200 }}
-        date={startDate}
-        mode="date"
-        placeholder="Start Date"
-        onDateChange={(date) => setStartDate(date)}
+      {/* Date Filters */}
+      <Button
+        title="Pick Start Date"
+        onPress={() => setShowStartPicker(true)}
       />
-      <DatePicker
-        style={{ width: 200 }}
-        date={endDate}
-        mode="date"
-        placeholder="End Date"
-        onDateChange={(date) => setEndDate(date)}
+      {showStartPicker && (
+        <DateTimePicker
+          value={startDate || new Date()}
+          mode="date"
+          onChange={(event, selectedDate) => {
+            setShowStartPicker(false);
+            setStartDate(selectedDate);
+          }}
+        />
+      )}
+
+      <Button
+        title="Pick End Date"
+        onPress={() => setShowEndPicker(true)}
       />
+      {showEndPicker && (
+        <DateTimePicker
+          value={endDate || new Date()}
+          mode="date"
+          onChange={(event, selectedDate) => {
+            setShowEndPicker(false);
+            setEndDate(selectedDate);
+          }}
+        />
+      )}
       <Button title="Filter by Date" onPress={handleDateFilter} />
 
       {/* Name Filter */}
       <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, margin: 10 }}
-        onChangeText={(text) => setNameFilter(text)}
-        value={nameFilter}
+        style={styles.input}
         placeholder="Filter by Name"
+        value={nameFilter}
+        onChangeText={setNameFilter}
       />
       <Button title="Filter by Name" onPress={handleNameFilter} />
 
-      {/* Amount Filter */}
+      {/* Amount Filters */}
       <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, margin: 10 }}
-        onChangeText={(text) => setMinAmount(text)}
-        value={minAmount}
+        style={styles.input}
         placeholder="Min Amount"
         keyboardType="numeric"
+        value={minAmount}
+        onChangeText={setMinAmount}
       />
       <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, margin: 10 }}
-        onChangeText={(text) => setMaxAmount(text)}
-        value={maxAmount}
+        style={styles.input}
         placeholder="Max Amount"
         keyboardType="numeric"
+        value={maxAmount}
+        onChangeText={setMaxAmount}
       />
       <Button title="Filter by Amount" onPress={handleAmountFilter} />
 
       <Button title="Clear Filters" onPress={handleClearFilters} />
 
       <ExpensesList expenses={expenses} />
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Add an Expense"
-          onPress={() => navigation.replace('AddExpense')}
-        />
-      </View>
+      <Button
+        title="Add an Expense"
+        onPress={() => navigation.navigate('AddExpense')}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  input: {
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+});

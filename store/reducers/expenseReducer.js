@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   expenses: [],
@@ -6,12 +6,13 @@ const initialState = {
 };
 
 const expenseSlice = createSlice({
-  name: "expenses",
+  name: 'expenses',
   initialState,
   reducers: {
     addExpense: (state, action) => {
-      state.expenses.push(action.payload);
-      state.filteredExpenses = [...state.expenses];
+      const newExpense = action.payload;
+      state.expenses = [...state.expenses, newExpense];
+      state.filteredExpenses = state.expenses;
     },
     filterByName: (state, action) => {
       const { name } = action.payload;
@@ -21,28 +22,35 @@ const expenseSlice = createSlice({
     },
     filterByDate: (state, action) => {
       const { startDate, endDate } = action.payload;
-      state.filteredExpenses = state.expenses.filter((expense) => {
-        const expenseDate = new Date(expense.date);
-        return expenseDate >= startDate && expenseDate <= endDate;
-      });
+      if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        state.filteredExpenses = state.expenses.filter((expense) => {
+          const expenseDate = new Date(expense.date);
+          return expenseDate >= start && expenseDate <= end;
+        });
+      }
     },
     filterByAmount: (state, action) => {
       const { minAmount, maxAmount } = action.payload;
       state.filteredExpenses = state.expenses.filter((expense) => {
         const amount = parseFloat(expense.amount);
-        return amount >= minAmount && amount <= maxAmount;
+        return (
+          (!minAmount || amount >= parseFloat(minAmount)) &&
+          (!maxAmount || amount <= parseFloat(maxAmount))
+        );
       });
     },
     clearFilters: (state) => {
-      state.filteredExpenses = [...state.expenses];
+      state.filteredExpenses = state.expenses;
     },
   },
 });
 
 export const {
   addExpense,
-  filterByDate,
   filterByName,
+  filterByDate,
   filterByAmount,
   clearFilters,
 } = expenseSlice.actions;

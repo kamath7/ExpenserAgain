@@ -25,7 +25,11 @@ export default function ExpenseFilter({ dispatch }) {
 
   return (
     <View style={styles.container}>
-      <Button title="Show Filters" onPress={toggleFilters} />
+      {/* Conditionally render button text */}
+      <Button
+        title={isFiltersVisible ? "Hide Filters" : "Show Filters"}
+        onPress={toggleFilters}
+      />
 
       {isFiltersVisible && (
         <View style={styles.filterOptions}>

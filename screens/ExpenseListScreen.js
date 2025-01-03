@@ -22,7 +22,7 @@ const ExpenseListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Saved Expenses in the {currentMonth}</Text>
+      <Text style={styles.title}>Saved Expenses in  {currentMonth}</Text>
       <Text style={styles.totalText}>Total: ₹ {parseFloat(totalExpenses).toFixed(2)}</Text>
       <ExpenseList expenses={expenses} />
       <View style={styles.buttonContainer}>

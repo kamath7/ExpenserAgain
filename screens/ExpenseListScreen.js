@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from "react
 import { useSelector, useDispatch } from "react-redux";
 import { clearFilters } from "../store/reducers/expenseReducer";
 import ExpenseFilter from "../ExpenseFilter";
-import ExpenseList from "../ExpenseList"; // Import ExpenseList component
+import ExpenseList from "../ExpenseList";
 
 const ExpenseListScreen = ({ navigation }) => {
   const expenses = useSelector((state) => state.expense.filteredExpenses);
@@ -30,10 +30,7 @@ const ExpenseListScreen = ({ navigation }) => {
       {/* Modal to display ExpenseFilter directly */}
       <Modal visible={showModal} animationType="slide" onRequestClose={() => setShowModal(false)}>
         <View style={styles.modalContainer}>
-          <ExpenseFilter dispatch={dispatch} />
-          <TouchableOpacity style={styles.closeButton} onPress={() => setShowModal(false)}>
-            <Text style={styles.buttonText}>Close Filter</Text>
-          </TouchableOpacity>
+          <ExpenseFilter dispatch={dispatch} setShowModal={setShowModal} />
         </View>
       </Modal>
     </View>
@@ -77,15 +74,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     backgroundColor: '#fff',
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: '#f44336',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

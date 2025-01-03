@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
-import { addExpense } from "../store/reducers/expenseReducer"; // Ensure you have this action
+import { addExpense } from "../store/reducers/expenseReducer";
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from "uuid";
 import SimpleForm from "../SimpleForm";
@@ -15,7 +15,7 @@ export default function AddExpenseScreen({ navigation }) {
 
   const handleAddExpense = (expenseData) => {
     const newExpense = {
-      id: uuidv4(), // Generate a unique ID using uuid
+      id: uuidv4(),
       name: expenseData.name,
       amount: expenseData.amount,
       date: expenseData.date,
@@ -28,7 +28,7 @@ export default function AddExpenseScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <SimpleForm
-        onSubmit={handleAddExpense} // Pass the handler to SimpleForm
+        onSubmit={handleAddExpense}
         expenseName={expenseName}
         setExpenseName={setExpenseName}
         expenseAmount={expenseAmount}
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f9f9f9", // Light background for consistency
-    justifyContent: "flex-start", // Align items from top
+    backgroundColor: "#f9f9f9",
+    justifyContent: "flex-start",
   },
 });

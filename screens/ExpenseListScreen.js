@@ -1,9 +1,17 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert } from "react-native";
+import React, { useMemo, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  Alert,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { clearFilters, removeExpense } from "../store/reducers/expenseReducer";
-import ExpenseFilter from "../ExpenseFilter";
+import { removeExpense } from "../store/reducers/expenseReducer";
 import ExpenseList from "../ExpenseList";
+import ExpenseFilter from "../ExpenseFilter";
 
 const ExpenseListScreen = ({ navigation }) => {
   const expenses = useSelector((state) => state.expense.filteredExpenses);
@@ -11,10 +19,11 @@ const ExpenseListScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
 
   const totalExpenses = useMemo(() => {
-    return expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
+    return expenses.reduce(
+      (sum, expense) => sum + parseFloat(expense.amount),
+      0
+    );
   }, [expenses]);
-
-  const currentMonth = new Date().toLocaleString("default", { month: "long" });
 
   const handleLongPress = (expenseId) => {
     Alert.alert(
@@ -35,29 +44,41 @@ const ExpenseListScreen = ({ navigation }) => {
   };
 
   const handlePress = (expense) => {
-    navigation.navigate("SimpleForm", { expense });
+    navigation.navigate("EditExpense", { expense }); // Navigate to the correct EditExpense screen
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Saved Expenses in {currentMonth}</Text>
-      <Text style={styles.totalText}>Total: ₹ {parseFloat(totalExpenses).toFixed(2)}</Text>
-      <ExpenseList 
-        expenses={expenses} 
-        onPressItem={handlePress} 
-        onLongPressItem={handleLongPress} 
+      <Text style={styles.title}>Saved Expenses</Text>
+      <Text style={styles.totalText}>
+        Total: ₹ {parseFloat(totalExpenses).toFixed(2)}
+      </Text>
+      <ExpenseList
+        expenses={expenses}
+        onPressItem={handlePress}
+        onLongPressItem={handleLongPress}
       />
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("AddExpense")}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("AddExpense")}
+        >
           <Text style={styles.buttonText}>Add Expense</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setShowModal(true)}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setShowModal(true)}
+        >
           <Text style={styles.buttonText}>Show Filter</Text>
         </TouchableOpacity>
       </View>
 
       {/* Modal to display ExpenseFilter */}
-      <Modal visible={showModal} animationType="slide" onRequestClose={() => setShowModal(false)}>
+      <Modal
+        visible={showModal}
+        animationType="slide"
+        onRequestClose={() => setShowModal(false)}
+      >
         <View style={styles.modalContainer}>
           <ExpenseFilter dispatch={dispatch} setShowModal={setShowModal} />
         </View>

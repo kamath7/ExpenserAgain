@@ -10,59 +10,26 @@ const expenseSlice = createSlice({
   initialState,
   reducers: {
     addExpense: (state, action) => {
-      const newExpense = action.payload;
-      state.expenses.push(newExpense);
+      state.expenses.push(action.payload);
       state.filteredExpenses = state.expenses;
     },
-    filterByName: (state, action) => {
-      const { name } = action.payload;
-      console.log('Filtering by name:', name);  // Debugging log
-      state.filteredExpenses = state.expenses.filter((expense) =>
-        expense.name.toLowerCase().includes(name.toLowerCase())
-      );
-    },
-    filterByDate: (state, action) => {
-      const { startDate, endDate } = action.payload;
-      console.log('Filtering by date:', startDate, endDate);  // Debugging log
-      if (startDate && endDate) {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        state.filteredExpenses = state.expenses.filter((expense) => {
-          const expenseDate = new Date(expense.date);
-          return expenseDate >= start && expenseDate <= end;
-        });
+    updateExpense: (state, action) => {
+      const updatedExpense = action.payload;
+      const index = state.expenses.findIndex(expense => expense.id === updatedExpense.id);
+      if (index !== -1) {
+        state.expenses[index] = updatedExpense;  // Replace with updated expense
+        state.filteredExpenses = state.expenses; // Recalculate filtered expenses
       }
     },
-    filterByAmount: (state, action) => {
-      const { minAmount, maxAmount } = action.payload;
-      console.log('Filtering by amount:', minAmount, maxAmount);  // Debugging log
-      state.filteredExpenses = state.expenses.filter((expense) => {
-        const amount = parseFloat(expense.amount);
-        return (
-          (!minAmount || amount >= minAmount) &&
-          (!maxAmount || amount <= maxAmount)
-        );
-      });
-    },
-    clearFilters: (state) => {
-      state.filteredExpenses = state.expenses;
-    },
-    // New action to remove an expense
     removeExpense: (state, action) => {
       const expenseId = action.payload;
       state.expenses = state.expenses.filter(expense => expense.id !== expenseId);
       state.filteredExpenses = state.filteredExpenses.filter(expense => expense.id !== expenseId);
     },
+    // Additional actions for filtering, clearing filters
   },
 });
 
-export const { 
-  addExpense, 
-  filterByName, 
-  filterByDate, 
-  filterByAmount, 
-  clearFilters, 
-  removeExpense 
-} = expenseSlice.actions;
+export const { addExpense, updateExpense, removeExpense } = expenseSlice.actions;
 
 export default expenseSlice.reducer;

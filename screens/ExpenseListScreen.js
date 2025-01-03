@@ -47,9 +47,11 @@ const ExpenseListScreen = ({ navigation }) => {
     navigation.navigate("EditExpense", { expense }); // Navigate to the correct EditExpense screen
   };
 
+  const currentMonth = new Date().toLocaleString("default", { month: "long" });
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Saved Expenses</Text>
+      <Text style={styles.title}>Saved Expenses in {currentMonth}</Text>
       <Text style={styles.totalText}>
         Total: ₹ {parseFloat(totalExpenses).toFixed(2)}
       </Text>

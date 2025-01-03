@@ -47,8 +47,22 @@ const expenseSlice = createSlice({
     clearFilters: (state) => {
       state.filteredExpenses = state.expenses;
     },
+    // New action to remove an expense
+    removeExpense: (state, action) => {
+      const expenseId = action.payload;
+      state.expenses = state.expenses.filter(expense => expense.id !== expenseId);
+      state.filteredExpenses = state.filteredExpenses.filter(expense => expense.id !== expenseId);
+    },
   },
 });
 
-export const { addExpense, filterByName, filterByDate, filterByAmount, clearFilters } = expenseSlice.actions;
+export const { 
+  addExpense, 
+  filterByName, 
+  filterByDate, 
+  filterByAmount, 
+  clearFilters, 
+  removeExpense 
+} = expenseSlice.actions;
+
 export default expenseSlice.reducer;

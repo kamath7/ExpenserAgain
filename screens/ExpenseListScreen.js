@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { clearFilters } from "../store/reducers/expenseReducer";
+import { clearFilters, removeExpense } from "../store/reducers/expenseReducer";
 import ExpenseFilter from "../ExpenseFilter";
 import ExpenseList from "../ExpenseList";
 
@@ -10,21 +10,43 @@ const ExpenseListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    dispatch(clearFilters());
-  }, [dispatch]);
-
   const totalExpenses = useMemo(() => {
     return expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
   }, [expenses]);
 
   const currentMonth = new Date().toLocaleString("default", { month: "long" });
 
+  const handleLongPress = (expenseId) => {
+    Alert.alert(
+      "Delete Expense",
+      "Are you sure you want to delete this expense?",
+      [
+        {
+          text: "No",
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => dispatch(removeExpense(expenseId)),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const handlePress = (expense) => {
+    navigation.navigate("SimpleForm", { expense });
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Saved Expenses in  {currentMonth}</Text>
+      <Text style={styles.title}>Saved Expenses in {currentMonth}</Text>
       <Text style={styles.totalText}>Total: ₹ {parseFloat(totalExpenses).toFixed(2)}</Text>
-      <ExpenseList expenses={expenses} />
+      <ExpenseList 
+        expenses={expenses} 
+        onPressItem={handlePress} 
+        onLongPressItem={handleLongPress} 
+      />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("AddExpense")}>
           <Text style={styles.buttonText}>Add Expense</Text>
